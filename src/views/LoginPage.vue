@@ -14,7 +14,7 @@
                         <h1 class="font-bold mb-2 text-2xl">Smart Control KWH Meter</h1>
                         <p>Monitor, Remote Control and Auto Detect your KWH Status in one app</p>
                         <button @click="googleLogin()" class="btn bg-orange-500 hover:bg-orange-600 w-full rounded-full mt-4 text-white">Login with Google</button>
-                        <button @click="anonymousLogin()" class="btn btn-ghost w-full rounded-full mt-4 text-white">Skip</button>
+                        <button @click="anonymousLogin()" class="btn btn-ghost w-full rounded-full mt-4x">Skip</button>
                     </div>
                 </div>
             </div>
