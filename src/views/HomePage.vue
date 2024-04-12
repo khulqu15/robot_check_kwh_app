@@ -24,95 +24,97 @@
             <h1 class="font-bold mb-4">For your information</h1>
             <p class="text-orange-500/60">When you clicked the pads button the robot XY will clicked the buttons same with button’s you clicked</p>
           </div>
-          <div class="mx-auto max-w-md bg-base-200 w-full p-6 mt-6 rounded-xl">
-            <div class="grid grid-cols-6 gap-4 items-center">
-              <div class="col-span-4">
-                <div class="w-full p-3 bg-base-300 h-24 rounded-lg">
-                  <div class="flex items-center justify-between">
-                    <h6>01</h6>
-                    <h6>kWH</h6>
+          <div class="grid md:grid-cols-2 grid-cols-1 gap-4">
+            <div class="mx-auto max-w-md bg-base-200 w-full p-6 mt-6 rounded-xl">
+              <div class="grid grid-cols-6 gap-4 items-center">
+                <div class="col-span-4">
+                  <div class="w-full p-3 bg-base-300 h-24 rounded-lg overflow-hidden">
+                    <div class="flex items-center justify-between">
+                      <h6>01</h6>
+                      <h6>kWH</h6>
+                    </div>
+                    <div class="flex mt-3 justify-end">
+                      <h1 v-if="number == null || number == ''" class="text-5xl font-bold">{{ reformatNumber(kwh, '.') }}</h1>
+                      <h1 v-else class="text-5xl font-bold text-right">{{ reformatNumber(number, '') }}</h1>
+                    </div>
                   </div>
-                  <div class="flex mt-3 justify-end overflow-x-auto">
-                    <h1 v-if="number == null || number == ''" class="text-4xl font-bold">{{ kwh }}</h1>
-                    <h1 v-else class="text-4xl font-bold">{{ number }}</h1>
+                  <div class="grid grid-cols-3 mt-3">
+                    <div class="text-center">
+                      <div class="inline-block w-4 h-4 rounded-full bg-base-300"></div> <br>
+                      <span class="text-xs">1600imp/kWH</span>
+                    </div>
+                    <div class="text-center">
+                      <div class="inline-block w-4 h-4 rounded-full bg-base-300"></div> <br>
+                      <span class="text-xs">Warning</span>
+                    </div>
+                    <div class="text-center">
+                      <div class="inline-block w-4 h-4 rounded-full bg-base-300"></div> <br>
+                      <span class="text-xs">Credit</span>
+                    </div>
                   </div>
                 </div>
-                <div class="grid grid-cols-3 mt-3">
-                  <div class="text-center">
-                    <div class="inline-block w-4 h-4 rounded-full bg-base-300"></div> <br>
-                    <span class="text-xs">1600imp/kWH</span>
-                  </div>
-                  <div class="text-center">
-                    <div class="inline-block w-4 h-4 rounded-full bg-base-300"></div> <br>
-                    <span class="text-xs">Warning</span>
-                  </div>
-                  <div class="text-center">
-                    <div class="inline-block w-4 h-4 rounded-full bg-base-300"></div> <br>
-                    <span class="text-xs">Credit</span>
+                <div class="col-span-2 flex justify-end">
+                  <div class="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center">
+                    <div class="w-12 h-12 bg-orange-800 rounded-full"></div>
                   </div>
                 </div>
               </div>
-              <div class="col-span-2 flex justify-end">
-                <div class="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center">
-                  <div class="w-12 h-12 bg-orange-800 rounded-full"></div>
+              <div class="flex justify-between w-full mt-3 items-center">
+                <div class="flex items-center gap-4">
+                  <img src="/pln.png" class="w-12" alt="Logo PENS">
+                  <img src="/pens.png" class="w-12" alt="Logo PENS">
+                </div>
+                <div>
+                  <div class="p-2 bg-white rounded">
+                    <img src="/barcode.png" alt="Dummy barcode">
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="flex justify-between w-full mt-3 items-center">
-              <div class="flex items-center gap-4">
-                <img src="/pln.png" class="w-12" alt="Logo PENS">
-                <img src="/pens.png" class="w-12" alt="Logo PENS">
-              </div>
-              <div>
-                <div class="p-2 bg-white rounded">
-                  <img src="/barcode.png" alt="Dummy barcode">
+            <div class="mt-6 max-w-md mx-auto w-full">
+              <div class="grid grid-cols-3 gap-4">
+                <div>
+                  <button @click="setNumber(1)" class="w-full btn bg-white hover:bg-white/90 white-button-shadowed text-black text-2xl">1</button>
+                </div>
+                <div>
+                  <button @click="setNumber(2)" class="w-full btn bg-white hover:bg-white/90 white-button-shadowed text-black text-2xl">2</button>
+                </div>
+                <div>
+                  <button @click="setNumber(3)" class="w-full btn bg-white hover:bg-white/90 white-button-shadowed text-black text-2xl">3</button>
+                </div>
+                <div>
+                  <button @click="setNumber(4)" class="w-full btn bg-white hover:bg-white/90 white-button-shadowed text-black text-2xl">4</button>
+                </div>
+                <div>
+                  <button @click="setNumber(5)" class="w-full btn bg-white hover:bg-white/90 white-button-shadowed text-black text-2xl">5</button>
+                </div>
+                <div>
+                  <button @click="setNumber(6)" class="w-full btn bg-white hover:bg-white/90 white-button-shadowed text-black text-2xl">6</button>
+                </div>
+                <div>
+                  <button @click="setNumber(7)" class="w-full btn bg-white hover:bg-white/90 white-button-shadowed text-black text-2xl">7</button>
+                </div>
+                <div>
+                  <button @click="setNumber(8)" class="w-full btn bg-white hover:bg-white/90 white-button-shadowed text-black text-2xl">8</button>
+                </div>
+                <div>
+                  <button @click="setNumber(9)" class="w-full btn bg-white hover:bg-white/90 white-button-shadowed text-black text-2xl">9</button>
+                </div>
+                <div>
+                  <button @click="setNumber(-1)" class="w-full btn bg-base-300 hover:bg-base-300/90 gray-button-shadowed text-2xl">
+                    <Icon icon="mingcute:arrow-left-fill" />
+                  </button>
+                </div>
+                <div>
+                  <button @click="setNumber(0)" class="w-full btn bg-white hover:bg-white/90 white-button-shadowed text-black text-2xl">0</button>
+                </div>
+                <div>
+                  <button @click="setNumber('Enter')" class="w-full btn bg-orange-500 hover:bg-orange-500/90 orange-button-shadowed text-white text-2xl">
+                    <Icon icon="fluent:arrow-enter-left-24-filled" />
+                  </button>
                 </div>
               </div>
-            </div>
           </div>
-          <div class="mt-6">
-            <div class="grid grid-cols-3 gap-4">
-              <div>
-                <button @click="setNumber(1)" class="w-full btn bg-white hover:bg-white/90 white-button-shadowed text-black text-2xl">1</button>
-              </div>
-              <div>
-                <button @click="setNumber(2)" class="w-full btn bg-white hover:bg-white/90 white-button-shadowed text-black text-2xl">2</button>
-              </div>
-              <div>
-                <button @click="setNumber(3)" class="w-full btn bg-white hover:bg-white/90 white-button-shadowed text-black text-2xl">3</button>
-              </div>
-              <div>
-                <button @click="setNumber(4)" class="w-full btn bg-white hover:bg-white/90 white-button-shadowed text-black text-2xl">4</button>
-              </div>
-              <div>
-                <button @click="setNumber(5)" class="w-full btn bg-white hover:bg-white/90 white-button-shadowed text-black text-2xl">5</button>
-              </div>
-              <div>
-                <button @click="setNumber(6)" class="w-full btn bg-white hover:bg-white/90 white-button-shadowed text-black text-2xl">6</button>
-              </div>
-              <div>
-                <button @click="setNumber(7)" class="w-full btn bg-white hover:bg-white/90 white-button-shadowed text-black text-2xl">7</button>
-              </div>
-              <div>
-                <button @click="setNumber(8)" class="w-full btn bg-white hover:bg-white/90 white-button-shadowed text-black text-2xl">8</button>
-              </div>
-              <div>
-                <button @click="setNumber(9)" class="w-full btn bg-white hover:bg-white/90 white-button-shadowed text-black text-2xl">9</button>
-              </div>
-              <div>
-                <button @click="setNumber(-1)" class="w-full btn bg-base-300 hover:bg-base-300/90 gray-button-shadowed text-2xl">
-                  <Icon icon="mingcute:arrow-left-fill" />
-                </button>
-              </div>
-              <div>
-                <button @click="setNumber(0)" class="w-full btn bg-white hover:bg-white/90 white-button-shadowed text-black text-2xl">0</button>
-              </div>
-              <div>
-                <button @click="setNumber('Enter')" class="w-full btn bg-orange-500 hover:bg-orange-500/90 orange-button-shadowed text-white text-2xl">
-                  <Icon icon="fluent:arrow-enter-left-24-filled" />
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -126,14 +128,14 @@ import { onMounted, Ref, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { Icon } from '@iconify/vue'
 import { database } from '@/firebase'
-import { set, ref as dbRef } from 'firebase/database'
+import { onValue, set, ref as dbRef, get } from 'firebase/database'
 
 const router = useRouter()
 const user_data: any = ref({
   photoURL: 'pln.png'
 })
 
-const kwh: Ref<number> = ref(3100)
+const kwh: Ref<any> = ref(0)
 const number: Ref<any> = ref(null)
 
 onMounted(() => {
@@ -147,12 +149,29 @@ onMounted(() => {
   if(localTheme == 'dark') document.documentElement.setAttribute('data-theme', 'dark')
   else document.documentElement.setAttribute('data-theme', 'light')
   console.log(localTheme)
+
+  fetchData('kwh')
 })
+
+const reformatNumber = (value: any, separator: any) => {
+  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator);
+}
 
 const onLogout = async() => {
   sessionStorage.removeItem('token')
   sessionStorage.removeItem('user')
   router.replace({path: '/'})
+}
+
+const fetchData = async(path: any) => {
+  const dataRef = dbRef(database, path)
+  onValue(dataRef, (snapshot) => {
+    if(snapshot.exists()) {
+      kwh.value = snapshot.val()
+    } else {
+      kwh.value = 0
+    }
+  })
 }
 
 const setNumber = async(value: any) => {
@@ -173,7 +192,6 @@ const setNumber = async(value: any) => {
       let deleted_last_char = number_string.slice(0, value)
       number.value = deleted_last_char
     }
-    console.log(number.value)
     saveData()
     return false
   }
