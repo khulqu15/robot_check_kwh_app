@@ -210,7 +210,7 @@ const user_data: any = ref({
 const kwh: Ref<any> = ref(0)
 const number: Ref<any> = ref(null)
 const kwh_updated_at: Ref<any> = ref(null)
-const menu_selected: Ref<string> = ref('daily')
+const menu_selected: Ref<string> = ref('home')
 const token: Ref<any> = ref(null)
 const histories: Ref<any> = ref([])
 const requests: Ref<any> = ref({})
@@ -271,9 +271,11 @@ const setNumber = async(value: any) => {
   if(number.value == null) number.value = ''
   let number_string = number.value.toString()
   if(value == 'Enter') {
-    number.value = null
     try {
-      await set(dbRef(database, 'number'), 'enter ')
+      if(number.value.length == 12) await set(dbRef(database, 'token/token'), number.value)
+      else await set(dbRef(database, 'token/non-token'), number.value)
+      await set(dbRef(database, 'number'), 'enter')
+      number.value = null
     } catch(error) {
       console.error('Error saving data: ', error)
     }
