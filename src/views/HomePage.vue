@@ -272,7 +272,7 @@ const setNumber = async(value: any) => {
   let number_string = number.value.toString()
   if(value == 'Enter') {
     try {
-      if(number.value.length == 12) await set(dbRef(database, 'token/token'), number.value)
+      if(number.value.length == 20) await set(dbRef(database, 'token/token'), number.value)
       else await set(dbRef(database, 'token/non-token'), number.value)
       await set(dbRef(database, 'number'), 'enter')
       number.value = null
