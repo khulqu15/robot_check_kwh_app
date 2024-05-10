@@ -16,6 +16,7 @@
     "daisyui": "^4.10.1",
     "firebase": "^10.11.0",
     "ionicons": "^7.0.0",
+    "keras": "^1.0.1",
     "vue": "^3.3.0",
     "vue-router": "^4.2.0"
   },
