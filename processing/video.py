@@ -8,7 +8,7 @@ def extract_integer(value):
     if number_str: return number_str
     else: return None
 
-cap = cv2.VideoCapture('./data/video1.mp4')
+cap = cv2.VideoCapture('./data/kwh13.mp4')
 width = 480
 ratio = width / cap.get(cv2.CAP_PROP_FRAME_WIDTH)
 height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT) * ratio)
