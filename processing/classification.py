@@ -3,9 +3,22 @@ import cv2
 import numpy as np
 import string
 import tensorflow as tf
-import os
 import urllib
-import sys
+import pyrebase
+
+def firebase_config():
+    config = {
+        "apiKey": "AIzaSyBhFKQ73tsHA7ZFQnel2D7tuUkHNHie1ug",
+        "authDomain": "kwhmeter-d9fda.firebaseapp.com",
+        "databaseURL": "https://kwhmeter-d9fda-default-rtdb.asia-southeast1.firebasedatabase.app",
+        "projectId": "kwhmeter-d9fda",
+        "storageBucket": "kwhmeter-d9fda.appspot.com",
+        "messagingSenderId": "539756566253",
+        "appId": "1:539756566253:web:c18ecd52b0a7bc82b8dee4",
+        "measurementId": "G-JL73R0L5BT"
+    }
+    firebase = pyrebase.initialize_app(config)
+    return firebase.database()
 
 alphabet = string.digits + string.ascii_lowercase + '.'
 blank_index = len(alphabet)
@@ -32,39 +45,52 @@ def predict(image, interpreter):
     output = interpreter.get_tensor(output_details[0]['index'])
     return output
 
+def format_text(text):
+    if len(text) > 2:
+        return text[:-2] + ',' + text[-2:]
+    return text
+
 def main():
-    video_path = './data/kwh12.mp4'
-    # video_path = 'http://192.168.1.61/cam-hi.jpg'
+    db = firebase_config()
+    type_value = db.child("type").get()
+    if type_value.val() is not None:
+        return type_value.val()
+    else:
+        type_value = 'kwh'
+        
+    # video_path = './data/kwh12.mp4'
+    video_path = 'http://192.168.65.231/cam-hi.jpg'
     
     model_path = './model/model_float16.tflite'
-    if not os.path.isfile(video_path):
-        print(f'{video_path} does not exist')
-        sys.exit()
+    # if not os.path.isfile(video_path):
+    #     print(f'{video_path} does not exist')
+    #     sys.exit()
 
     interpreter = tf.lite.Interpreter(model_path=model_path)
     interpreter.allocate_tensors()
 
-    # cap = cv2.VideoCapture(video_path)
-
+    cv2.namedWindow('live transmission', cv2.WINDOW_AUTOSIZE)
     while True:
         try:
             img_resp = urllib.request.urlopen(video_path)
             imgnp = np.array(bytearray(img_resp.read()), dtype=np.uint8)
-            frame = cv2.imdecode(imgnp, -1)
-            # ret, frame = cap.read()
+            frame = cv2.imdecode(imgnp, cv2.IMREAD_COLOR)
             
             if frame is None:
                 print("Failed to fetch frame from ESP32-CAM")
                 break
             
-            roi = frame[y:y+h, x:x+w]
 
-            result = predict(roi, interpreter)
+            result = predict(frame, interpreter)
             text = "".join(alphabet[index] for index in result[0] if index not in [blank_index, -1])
             
-            cv2.putText(frame, f'Extracted text: {text}', (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+            if len(text) >= 3:
+                cv2.putText(frame, f'Extracted text: {text}', (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                formatted_text = format_text(text)
+                if type == 'kwh':
+                    db.push({"data/balances": formatted_text})
+                
             cv2.imshow('Video', frame)
-            cv2.imshow('ROI', roi)
 
             if cv2.waitKey(1) & 0xFF == 27:
                 break
