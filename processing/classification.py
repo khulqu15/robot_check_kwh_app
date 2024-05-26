@@ -48,7 +48,7 @@ def predict(image, interpreter):
 
 def format_text(text):
     if len(text) > 2:
-        return text[:-2] + ',' + text[-2:]
+        return text[:-2] + '.' + text[-2:]
     return text
 
 def main():
@@ -90,7 +90,7 @@ def main():
                 current_time = time.time()
                 if (current_time - last_push_time > push_interval) and (formatted_text != last_text):
                     if type_value == 'kwh':
-                        db.push({"extracted_text": formatted_text})
+                        db.child('data').push({"balances": float(formatted_text)})
                         last_push_time = current_time
                         last_text = formatted_text
                         print(f"Updated Firebase with: {formatted_text}")
