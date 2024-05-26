@@ -7,6 +7,7 @@ import urllib
 import pyrebase
 import re
 import time
+import datetime
 
 def firebase_config():
     config = {
@@ -59,6 +60,8 @@ def main():
     
     last_push_time = 0
     push_interval = 5
+    record_interval = 60
+    last_record_time = 0
     last_text = None
     
     model_path = './model/model_float16.tflite'
@@ -91,9 +94,15 @@ def main():
                     current_time = time.time()
                     if (current_time - last_push_time > push_interval) and (formatted_text != last_text):
                         db.child('data').child('balances').set(numeric_value)
+                        if (current_time - last_record_time > record_interval):
+                            now = datetime.datetime.now()
+                            timestamp = datetime.datetime.timestamp(now)
+                            db.child('data').child('last_updates').child(timestamp).set(numeric_value)
+
                         last_push_time = current_time
                         last_text = formatted_text
                         print(f"Updated Firebase with: {numeric_value}")
+                        
                 except ValueError:
                     print(f"Conversion error: '{formatted_text}' is not a valid float")
                 
