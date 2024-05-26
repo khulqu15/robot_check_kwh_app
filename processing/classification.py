@@ -80,12 +80,12 @@ def main():
             text = "".join(alphabet[index] for index in result[0] if index not in [blank_index, -1])
             
             if len(text) >= 3:
-                cv2.putText(frame, f'Extracted text: {text}', (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
                 if type_value == 'kwh':
                     formatted_text = float(format_text(text))
                 else:
                     formatted_text = text
                 print(f"Formatted Text: {formatted_text}")
+                cv2.putText(frame, f'Extracted text: {formatted_text}', (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
                 try:
                     numeric_value = float(formatted_text)
                     current_time = time.time()
