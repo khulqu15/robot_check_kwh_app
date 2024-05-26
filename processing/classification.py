@@ -5,6 +5,7 @@ import string
 import tensorflow as tf
 import urllib
 import pyrebase
+import re
 import time
 
 def firebase_config():
@@ -45,9 +46,10 @@ def predict(image, interpreter):
     return output
 
 def format_text(text):
-    if len(text) > 2:
-        return text[:-2] + '.' + text[-2:]
-    return text
+    filtered_text = re.sub(r'[^0-9.]', '', text)
+    if len(filtered_text) > 2:
+        return filtered_text[:-2] + '.' + filtered_text[-2:]
+    return filtered_text
 
 def main():
     db = firebase_config()
@@ -64,7 +66,6 @@ def main():
     interpreter = tf.lite.Interpreter(model_path=model_path)
     interpreter.allocate_tensors()
 
-    cv2.namedWindow('live transmission', cv2.WINDOW_AUTOSIZE)
     while True:
         try:
             img_resp = urllib.request.urlopen(video_path)
@@ -89,7 +90,7 @@ def main():
                     numeric_value = float(formatted_text)
                     current_time = time.time()
                     if (current_time - last_push_time > push_interval) and (formatted_text != last_text):
-                        db.child('data').push({"balances": numeric_value})
+                        db.child('data').child('balances').set(numeric_value)
                         last_push_time = current_time
                         last_text = formatted_text
                         print(f"Updated Firebase with: {numeric_value}")
