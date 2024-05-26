@@ -24,8 +24,6 @@ def firebase_config():
 alphabet = string.digits + string.ascii_lowercase + '.'
 blank_index = len(alphabet)
 
-x, y, w, h = 10, 670, 800, 650
-
 def prepare_input(image):
     input_data = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     input_data = cv2.resize(input_data, (200, 31))
@@ -53,11 +51,7 @@ def format_text(text):
 
 def main():
     db = firebase_config()
-    type_value = db.child("type").get()
-    if type_value.val() is not None:
-        type_value = type_value.val()
-    else:
-        type_value = 'kwh'
+    type_value = db.child("type").get().val() or 'kwh'
         
     video_path = 'http://192.168.65.231/cam-hi.jpg'
     
@@ -86,14 +80,21 @@ def main():
             
             if len(text) >= 3:
                 cv2.putText(frame, f'Extracted text: {text}', (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-                formatted_text = format_text(text)
-                current_time = time.time()
-                if (current_time - last_push_time > push_interval) and (formatted_text != last_text):
-                    if type_value == 'kwh':
-                        db.child('data').push({"balances": float(formatted_text)})
+                if type_value == 'kwh':
+                    formatted_text = float(format_text(text))
+                else:
+                    formatted_text = text
+                print(f"Formatted Text: {formatted_text}")
+                try:
+                    numeric_value = float(formatted_text)
+                    current_time = time.time()
+                    if (current_time - last_push_time > push_interval) and (formatted_text != last_text):
+                        db.child('data').push({"balances": numeric_value})
                         last_push_time = current_time
                         last_text = formatted_text
-                        print(f"Updated Firebase with: {formatted_text}")
+                        print(f"Updated Firebase with: {numeric_value}")
+                except ValueError:
+                    print(f"Conversion error: '{formatted_text}' is not a valid float")
                 
             cv2.imshow('Video', frame)
 
