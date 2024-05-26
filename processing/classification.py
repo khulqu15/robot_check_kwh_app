@@ -84,11 +84,9 @@ def main():
             result = predict(frame, interpreter)
             text = "".join(alphabet[index] for index in result[0] if index not in [blank_index, -1])
             
-            if len(text) >= 3:
-                cv2.putText(frame, f'Extracted text: {text}', (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-                formatted_text = format_text(text)
-                if type == 'kwh':
-                    db.push({"data/balances": formatted_text})
+            cv2.putText(frame, f'Extracted text: {text}', (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+            formatted_text = format_text(text)
+            db.push({"data/balances": formatted_text})
                 
             cv2.imshow('Video', frame)
 
