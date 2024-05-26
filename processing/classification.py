@@ -54,18 +54,13 @@ def main():
     db = firebase_config()
     type_value = db.child("type").get()
     if type_value.val() is not None:
-        return type_value.val()
+        type_value = type_value.val()
     else:
         type_value = 'kwh'
         
-    # video_path = './data/kwh12.mp4'
     video_path = 'http://192.168.65.231/cam-hi.jpg'
     
     model_path = './model/model_float16.tflite'
-    # if not os.path.isfile(video_path):
-    #     print(f'{video_path} does not exist')
-    #     sys.exit()
-
     interpreter = tf.lite.Interpreter(model_path=model_path)
     interpreter.allocate_tensors()
 
@@ -77,9 +72,8 @@ def main():
             frame = cv2.imdecode(imgnp, cv2.IMREAD_COLOR)
             
             if frame is None:
-                print("Failed to fetch frame from ESP32-CAM")
-                break
-            
+                print("Failed to decode the image from ESP32-CAM")
+                continue  # Use continue to try again instead of breaking
 
             result = predict(frame, interpreter)
             text = "".join(alphabet[index] for index in result[0] if index not in [blank_index, -1])
@@ -94,11 +88,13 @@ def main():
                 break
             
         except Exception as e:
-            print(f"Error fetching frame: {e}")
-            break
+            print(f"Error fetching or processing frame: {e}")
         
-    # cap.release()
     cv2.destroyAllWindows()
+
+if __name__ == "__main__":
+    main()
+
 
 if __name__ == "__main__":
     main()
