@@ -5,6 +5,7 @@ import string
 import tensorflow as tf
 import urllib
 import pyrebase
+import time
 
 def firebase_config():
     config = {
@@ -60,7 +61,12 @@ def main():
         
     video_path = 'http://192.168.65.231/cam-hi.jpg'
     
+    last_push_time = 0
+    push_interval = 5
+    last_text = None
+    
     model_path = './model/model_float16.tflite'
+
     interpreter = tf.lite.Interpreter(model_path=model_path)
     interpreter.allocate_tensors()
 
@@ -72,15 +78,22 @@ def main():
             frame = cv2.imdecode(imgnp, cv2.IMREAD_COLOR)
             
             if frame is None:
-                print("Failed to decode the image from ESP32-CAM")
-                continue  # Use continue to try again instead of breaking
-
+                print("Failed to fetch frame from ESP32-CAM")
+                break
+            
             result = predict(frame, interpreter)
             text = "".join(alphabet[index] for index in result[0] if index not in [blank_index, -1])
             
-            cv2.putText(frame, f'Extracted text: {text}', (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-            formatted_text = format_text(text)
-            db.push({"data/balances": formatted_text})
+            if len(text) >= 3:
+                cv2.putText(frame, f'Extracted text: {text}', (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                formatted_text = format_text(text)
+                current_time = time.time()
+                if (current_time - last_push_time > push_interval) and (formatted_text != last_text):
+                    if type_value == 'kwh':
+                        db.push({"extracted_text": formatted_text})
+                        last_push_time = current_time
+                        last_text = formatted_text
+                        print(f"Updated Firebase with: {formatted_text}")
                 
             cv2.imshow('Video', frame)
 
@@ -88,10 +101,10 @@ def main():
                 break
             
         except Exception as e:
-            print(f"Error fetching or processing frame: {e}")
+            print(f"Error fetching frame: {e}")
+            break
         
     cv2.destroyAllWindows()
 
 if __name__ == "__main__":
     main()
-
