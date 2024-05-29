@@ -90,6 +90,8 @@ def main():
             current_time = time.time()
 
             if (current_time - last_classification_time > classification_interval):
+                last_classification_time = current_time
+
                 if len(text) >= 3:
                     if type_value == 'kwh':
                         formatted_text = float(format_text(text))
@@ -97,24 +99,25 @@ def main():
                         formatted_text = text
                     print(f"Formatted Text: {formatted_text}")
                     cv2.putText(frame, f'Extracted text: {formatted_text}', (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                    
                     try:
                         numeric_value = float(formatted_text)
                         if (current_time - last_push_time > push_interval) and (formatted_text != last_text):
                             db.child('data').child('balances').set(numeric_value)
-                            if (current_time - last_record_time > record_interval):
-                                now = datetime.datetime.now()
-                                datetime_string = now.strftime("%Y-%m-%d %H:%M:%S")
-                                db.child('data').child('last_updates').child(str(datetime_string)).set(numeric_value)
-                                last_record_time = current_time
-
                             last_push_time = current_time
                             last_text = formatted_text
                             print(f"Updated Firebase with: {numeric_value}")
-                            
+
+                        if (current_time - last_record_time > record_interval):
+                            now = datetime.datetime.now()
+                            datetime_string = now.strftime("%Y-%m-%d %H:%M:%S")
+                            db.child('data').child('last_updates').child(str(datetime_string)).set(numeric_value)
+                            last_record_time = current_time
+
                     except ValueError:
                         print(f"Conversion error: '{formatted_text}' is not a valid float")
+            
                         
-                last_classification_time = current_time
             cv2.imshow('Video', frame)
 
             if cv2.waitKey(1) & 0xFF == 27:
