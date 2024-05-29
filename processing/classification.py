@@ -105,6 +105,7 @@ def main():
                                 now = datetime.datetime.now()
                                 datetime_string = now.strftime("%Y-%m-%d %H:%M:%S")
                                 db.child('data').child('last_updates').child(str(datetime_string)).set(numeric_value)
+                                last_record_time = current_time
 
                             last_push_time = current_time
                             last_text = formatted_text
@@ -112,7 +113,8 @@ def main():
                             
                     except ValueError:
                         print(f"Conversion error: '{formatted_text}' is not a valid float")
-                    
+                        
+                last_classification_time = current_time
             cv2.imshow('Video', frame)
 
             if cv2.waitKey(1) & 0xFF == 27:
