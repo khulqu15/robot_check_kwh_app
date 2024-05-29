@@ -255,7 +255,37 @@ const fetchData = async(path: any) => {
       if(path == 'data/balances') kwh.value = snapshot.val()
       if(path == 'data/lastUpdateBalances') kwh_updated_at.value = snapshot.val()
       if(path == 'token/token') token.value = snapshot.val()
-      if(path == 'dailyUsage') histories.value = snapshot.val()
+      if(path == 'dailyUsage') {
+        let data_days = Object.keys(snapshot.val())
+        let data_days_reversed = data_days.map((e, i, a) => a[(a.length - 1) -i])
+        const data_histories = Object.values(snapshot.val())
+        const data_histories_reversed: any = data_histories.map((e, i, a) => a[(a.length - 1) -i])
+        
+        let usages: any = []
+        data_histories_reversed.forEach((element: any, index: any): any => {
+          if(index != data_histories_reversed.length - 1) {
+            usages.push(parseFloat((element - data_histories_reversed[index + 1]).toFixed(2)))
+          }
+        });
+
+        console.log(usages)
+        const data_usage_reversed: any = usages.map((e: any, i: any, a: any) => a[(a.length - 1) -i])
+        data_days_reversed.splice(0, 1)
+
+        let tmp_histories: any = {};
+        usages.forEach((element: any, index: number) => {
+          tmp_histories[data_days_reversed[index]] = element;
+        });
+
+        let keysSorted = Object.keys(tmp_histories).sort().reverse();
+
+        let sortedTmpHistories: any = {};
+        keysSorted.forEach(key => {
+          sortedTmpHistories[key] = tmp_histories[key];
+        });
+
+        histories.value = sortedTmpHistories
+      }
       if(path == 'request') requests.value = snapshot.val()
     } else {
       if(path == 'data/balances') kwh.value = 0
