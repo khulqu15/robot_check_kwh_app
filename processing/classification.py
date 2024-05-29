@@ -59,13 +59,13 @@ def main():
     video_path = 'http://192.168.65.231/cam-hi.jpg'
     
     last_push_time = 0
-    push_interval = 15 * 60
+    push_interval = 900
 
     last_record_time = 0
-    record_interval = 60 * 60
+    record_interval = 3600
 
     last_classification_time = 0
-    classification_interval = 5 * 60
+    classification_interval = 300
 
     last_text = None
     
@@ -87,9 +87,9 @@ def main():
             result = predict(frame, interpreter)
             text = "".join(alphabet[index] for index in result[0] if index not in [blank_index, -1])
 
-            current_time = time.time()
+            current_time = time.perf_counter()
 
-            if (current_time - last_classification_time > classification_interval):
+            if current_time - last_classification_time > classification_interval:
                 last_classification_time = current_time
 
                 if len(text) >= 3:
@@ -102,13 +102,13 @@ def main():
                     
                     try:
                         numeric_value = float(formatted_text)
-                        if (current_time - last_push_time > push_interval) and (formatted_text != last_text):
+                        if current_time - last_push_time > push_interval and formatted_text != last_text:
                             db.child('data').child('balances').set(numeric_value)
                             last_push_time = current_time
                             last_text = formatted_text
                             print(f"Updated Firebase with: {numeric_value}")
 
-                        if (current_time - last_record_time > record_interval):
+                        if current_time - last_record_time > record_interval:
                             now = datetime.datetime.now()
                             datetime_string = now.strftime("%Y-%m-%d %H:%M:%S")
                             db.child('data').child('last_updates').child(str(datetime_string)).set(numeric_value)
