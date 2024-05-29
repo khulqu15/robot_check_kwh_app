@@ -96,8 +96,8 @@ def main():
                         db.child('data').child('balances').set(numeric_value)
                         if (current_time - last_record_time > record_interval):
                             now = datetime.datetime.now()
-                            timestamp = datetime.datetime.timestamp(now)
-                            db.child('data').child('last_updates').child(timestamp).set(numeric_value)
+                            timestamp = int(datetime.datetime.timestamp(now)) 
+                            db.child('data').child('last_updates').child(str(timestamp)).set(numeric_value)
 
                         last_push_time = current_time
                         last_text = formatted_text
