@@ -59,8 +59,8 @@ def main():
     video_path = 'http://192.168.65.231/cam-hi.jpg'
     
     last_push_time = 0
-    push_interval = 5
-    record_interval = 60
+    push_interval = 15 * 60
+    record_interval = 60 * 60
     last_record_time = 0
     last_text = None
     
