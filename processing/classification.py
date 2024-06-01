@@ -75,6 +75,14 @@ def main():
     interpreter.allocate_tensors()
 
     while True:
+        current_time_dt = datetime.datetime.now()
+        if current_time_dt.strftime("%H:%M") == "23:59":
+            if daily_readings:
+                average_reading = sum(daily_readings) / len(daily_readings)
+                db.child('data').child('daily_usage').child(current_time_dt.strftime("%Y-%m-%d")).set(average_reading)
+                daily_readings = []
+                db.child('data').child('last_updates').remove()
+                
         try:
             img_resp = urllib.request.urlopen(video_path)
             imgnp = np.array(bytearray(img_resp.read()), dtype=np.uint8)
@@ -116,8 +124,7 @@ def main():
 
                     except ValueError:
                         print(f"Conversion error: '{formatted_text}' is not a valid float")
-            
-                        
+
             cv2.imshow('Video', frame)
 
             if cv2.waitKey(1) & 0xFF == 27:
